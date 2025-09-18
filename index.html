@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Tracker Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .stat-card.highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .stat-card.highlight .stat-label {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-card.highlight .stat-value {
+            color: white;
+        }
+
+        .utilization-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .utilization-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .utilization-green { background: #28a745; }
+        .utilization-yellow { background: #ffc107; }
+        .utilization-red { background: #dc3545; }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .cards-list {
+            margin-top: 20px;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .card-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-item.priority {
+            border-left: 4px solid #dc3545;
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .card-utilization {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .detail-item {
+            color: #6c757d;
+        }
+
+        .detail-value {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .payment-history {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .payment-chip {
+            display: inline-block;
+            background: #e7f5ff;
+            color: #0c63e4;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-right: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sort-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .strategy-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .strategy-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .strategy-item {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .calculator-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .calc-result {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .progress-ring-circle {
+            stroke: #e9ecef;
+            stroke-width: 8;
+            fill: transparent;
+        }
+
+        .progress-ring-fill {
+            stroke: #667eea;
+            stroke-width: 8;
+            fill: transparent;
+            stroke-dasharray: 339.292;
+            stroke-dashoffset: 339.292;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 24px;
+            font-weight: bold;
+            fill: #2c3e50;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 300px;
+            position: relative;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            margin-top: 20px;
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-btn {
+                font-size: 12px;
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Credit Card Tracker Pro</h1>
+            <p style="opacity: 0.9; font-size: 14px;">Smart debt management & payoff tools</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="switchTab('strategy')">Strategy</button>
+            <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview-tab" class="tab-content active">
+            <div class="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Balance</div>
+                        <div class="stat-value" id="totalBalance">$0.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Min. Payments</div>
+                        <div class="stat-value" id="totalMinPayment">$0.00</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-label">Avg Interest Rate</div>
+                        <div class="stat-value" id="avgInterestRate">0.0%</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-label">Available Credit</div>
+                        <div class="stat-value" id="availableCredit">$0.00</div>
+                    </div>
+                </div>
+                
+                <div class="stat-label" style="margin-bottom: 5px;">Overall Utilization</div>
+                <div class="utilization-bar">
+                    <div class="utilization-fill" id="overallUtilization"></div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="openAddModal()">+ Add Card</button>
+                    <button class="btn btn-success" onclick="openPaymentModal()">💰 Log Payment</button>
+                    <button class="btn btn-secondary" onclick="exportToCSV()">📥 Export</button>
+                </div>
+
+                <div class="sort-controls">
+                    <button class="sort-btn active" onclick="sortCards('dueDate')">Due Date</button>
+                    <button class="sort-btn" onclick="sortCards('balance')">Balance</button>
+                    <button class="sort-btn" onclick="sortCards('rate')">Interest Rate</button>
+                    <button class="sort-btn" onclick="sortCards('utilization')">Utilization</button>
+                </div>
+            </div>
+
+            <div class="cards-list" id="cardsList"></div>
+        </div>
+
+        <!-- Strategy Tab -->
+        <div id="strategy-tab" class="tab-content">
+            <div class="strategy-card">
+                <div class="strategy-title">🎯 Recommended Payoff Strategy</div>
+                <div id="strategyRecommendation"></div>
+            </div>
+
+            <div class="calculator-section">
+                <h3 style="margin-bottom: 15px;">💡 Payoff Calculator</h3>
+                <div class="form-group">
+                    <label class="form-label">Extra Monthly Payment Amount</label>
+                    <input type="number" class="form-input" id="extraPayment" placeholder="0.00" step="0.01" min="0" onchange="calculatePayoff()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Strategy</label>
+                    <select class="form-input" id="payoffStrategy" onchange="calculatePayoff()">
+                        <option value="avalanche">Avalanche (Highest Interest First)</option>
+                        <option value="snowball">Snowball (Lowest Balance First)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="calculatePayoff()">Calculate Payoff Timeline</button>
+                <div id="payoffResults"></div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content">
+            <div class="dashboard">
+                <svg class="progress-ring" viewBox="0 0 120 120">
+                    <circle class="progress-ring-circle" cx="60" cy="60" r="54"/>
+                    <circle class="progress-ring-fill" id="progressRing" cx="60" cy="60" r="54"/>
+                    <text class="progress-text" x="60" y="65" text-anchor="middle" id="progressText">0%</text>
+                </svg>
+                <h3 style="text-align: center; margin-bottom: 20px;">Credit Health Score</h3>
+                
+                <div id="insightsSection"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Balance Distribution</h3>
+                <div class="bar-chart" id="balanceChart"></div>
+            </div>
+
+            <div class="dashboard">
+                <h3 style="margin-bottom: 15px;">📊 Payment History</h3>
+                <div id="paymentHistoryList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Card Modal -->
+    <div class="modal" id="cardModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add Credit Card</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="cardForm" onsubmit="saveCard(event)">
+                <div class="form-group">
+                    <label class="form-label">Card Name *</label>
+                    <input type="text" class="form-input" id="cardName" required placeholder="e.g., Chase Sapphire">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Current Balance *</label>
+                        <input type="number" class="form-input" id="balance" required step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Credit Limit *</label>
+                        <input type="number" class="form-input" id="creditLimit" required step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Interest Rate (%) *</label>
+                        <input type="number" class="form-input" id="interestRate" required step="0.01" min="0" max="100" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Min. Payment *</label>
+                        <input type="number" class="form-input" id="minPayment" required step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Due Date *</label>
+                    <input type="date" class="form-input" id="dueDate" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Balance Transfer Amount</label>
+                        <input type="number" class="form-input" id="btAmount" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">BT Expiry Date</label>
+                        <input type="date" class="form-input" id="btExpiry">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-input" id="notes" rows="3" placeholder="Optional notes..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save Card</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="btn delete-btn" id="deleteBtn" onclick="deleteCard()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Log Payment</h2>
+                <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="logPayment(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Card *</label>
+                    <select class="form-input" id="paymentCard" required>
+                        <option value="">Choose a card...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Amount *</label>
+                    <input type="number" class="form-input" id="paymentAmount" required step="0.01" min="0" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Date *</label>
+                    <input type="date" class="form-input" id="paymentDate" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Log Payment</button>
+                    <button type="button" class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let cards = [];
+        let payments = [];
+        let editingIndex = null;
+        let currentSort = 'dueDate';
+
+        // Load data from localStorage
+        function loadData() {
+            const savedCards = localStorage.getItem('creditCards');
+            const savedPayments = localStorage.getItem('creditPayments');
+            
+            if (savedCards) {
+                cards = JSON.parse(savedCards);
+            }
+            if (savedPayments) {
+                payments = JSON.parse(savedPayments);
+            }
+            
+            if (cards.length > 0) {
+                renderCards();
+                updateDashboard();
+                updateStrategy();
+                updateAnalytics();
+            } else {
+                renderEmptyState();
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('creditCards', JSON.stringify(cards));
+            localStorage.setItem('creditPayments', JSON.stringify(payments));
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
+            
+            if (tab === 'strategy') updateStrategy();
+            if (tab === 'analytics') updateAnalytics();
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        // Calculate utilization percentage
+        function calcUtilization(balance, limit) {
+            if (limit === 0) return 0;
+            return (balance / limit) * 100;
+        }
+
+        // Get utilization color class
+        function getUtilizationColor(utilization) {
+            if (utilization < 30) return 'utilization-green';
+            if (utilization <= 50) return 'utilization-yellow';
+            return 'utilization-red';
+        }
+
+        // Update dashboard statistics
+        function updateDashboard() {
+            const totalBalance = cards.reduce((sum, card) => sum + parseFloat(card.balance), 0);
+            const totalMinPayment = cards.reduce((sum, card) => sum + parseFloat(card.minPayment), 0);
+            const totalLimit = cards.reduce((sum, card) => sum + parseFloat(card.creditLimit), 0);
+            const availableCredit = totalLimit - totalBalance;
+            const overallUtilization = totalLimit > 0 ? calcUtilization(totalBalance, totalLimit) : 0;
+            
+            // Calculate weighted average interest rate
+            let avgInterestRate = 0;
+            if (totalBalance > 0) {
+                const weightedSum = cards.reduce((sum, card) => {
+                    return sum + (parseFloat(card.balance) * parseFloat(card.interestRate));
+                }, 0);
+                avgInterestRate = weightedSum / totalBalance;
+            }
+
+            document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
+            document.getElementById('totalMinPayment').textContent = formatCurrency(totalMinPayment);
+            document.getElementById('avgInterestRate').textContent = avgInterestRate.toFixed(1) + '%';
+            document.getElementById('availableCredit').textContent = formatCurrency(availableCredit);
+            
+            const utilizationBar = document.getElementById('overallUtilization');
+            utilizationBar.style.width = Math.min(overallUtilization, 100) + '%';
+            utilizationBar.textContent = overallUtilization.toFixed(1) + '%';
+            utilizationBar.className = 'utilization-fill ' + getUtilizationColor(overallUtilization);
+        }
+
+        // Sort cards
+        function sortCards(by) {
+            currentSort = by;
+            
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            switch(by) {
+                case 'balance':
+                    cards.sort((a, b) => parseFloat(b.balance) - parseFloat(a.balance));
+                    break;
+                case 'rate':
+                    cards.sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate));
+                    break;
+                case 'dueDate':
+                    cards.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+                    break;
+                case 'utilization':
+                    cards.sort((a, b) => {
+                        const utilA = calcUtilization(a.balance, a.creditLimit);
+                        const utilB = calcUtilization(b.balance, b.creditLimit);
+                        return utilB - utilA;
+                    });
+                    break;
+            }
+            
+            renderCards();
+        }
+
+        // Render cards list
+        function renderCards() {
+            const container = document.getElementById('cardsList');
+            
+            if (cards.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            // Find highest interest rate card with balance for priority flag
+            const highestRateCard = [...cards]
+                .filter(c => parseFloat(c.balance) > 0)
+                .sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate))[0];
+            
+            container.innerHTML = cards.map((card, index) => {
+                const utilization = calcUtilization(card.balance, card.creditLimit);
+                const utilizationColor = getUtilizationColor(utilization);
+                const dueDate = new Date(card.dueDate);
+                const daysUntilDue = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+                const isPriority = highestRateCard && card === highestRateCard;
+                
+                // Get recent payments for this card
+                const recentPayments = payments
+                    .filter(p => p.cardIndex === index)
+                    .slice(-3)
+                    .reverse();
+                
+                return `
+                    <div class="card-item ${isPriority ? 'priority' : ''}" onclick="openEditModal(${index})">
+                        ${isPriority ? '<span class="priority-badge">PAY FIRST</span>' : ''}
+                        <div class="card-header">
+                            <span class="card-name">${card.cardName}</span>
+                            <span class="card-utilization ${utilizationColor}">${utilization.toFixed(1)}%</span>
+                        </div>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                Balance: <span class="detail-value">${formatCurrency(card.balance)}</span>
+                            </div>
+                            <div class="detail-item">
+                                Limit: <span class="detail-value">${formatCurrency(card.creditLimit)}</span>
+                            </div>
+                            <div class="detail-item">
+                                Rate: <span class="detail-value">${card.interestRate}%</span>
+                            </div>
+                            <div class="detail-item">
+                                Min: <span class="detail-value">${formatCurrency(card.minPayment)}</span>
+                            </div>
+                            <div class="detail-item" style="grid-column: span 2;">
+                                Due: <span class="detail-value ${daysUntilDue <= 3 ? 'text-danger' : ''}">${dueDate.toLocaleDateString()} (${daysUntilDue} days)</span>
+                            </div>
+                            ${card.btAmount ? `
+                                <div class="detail-item" style="grid-column: span 2;">
+                                    BT: <span class="detail-value">${formatCurrency(card.btAmount)} until ${new Date(card.btExpiry).toLocaleDateString()}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${recentPayments.length > 0 ? `
+                            <div class="payment-history">
+                                <div style="font-size: 12px; color: #6c757d; margin-bottom: 5px;">Recent payments:</div>
+                                ${recentPayments.map(p => `
+                                    <span class="payment-chip">${formatCurrency(p.amount)} on ${new Date(p.date).toLocaleDateString()}</span>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render empty state
+        function renderEmptyState() {
+            const container = document.getElementById('cardsList');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                    <h3>No cards added yet</h3>
+                    <p>Add your first credit card to start tracking</p>
+                </div>
+            `;
+        }
+
+        // Update strategy recommendations
+        function updateStrategy() {
+            if (cards.length === 0) {
+                document.getElementById('strategyRecommendation').innerHTML = '<p>Add cards to see recommendations</p>';
+                return;
+            }
+
+            const cardsWithBalance = cards.filter(c => parseFloat(c.balance) > 0);
+            const avalancheOrder = [...cardsWithBalance].sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate));
+            const snowballOrder = [...cardsWithBalance].sort((a, b) => parseFloat(a.balance) - parseFloat(b.balance));
+            
+            let strategyHTML = '';
+            
+            // Avalanche method recommendation
+            if (avalancheOrder.length > 0) {
+                strategyHTML += `
+                    <div class="strategy-item">
+                        <strong>🏔️ Avalanche Method (Save Most Money)</strong><br>
+                        <small style="opacity: 0.9;">Pay minimums on all cards, then focus extra payments on:</small><br>
+                        ${avalancheOrder.slice(0, 3).map((card, i) => 
+                            `${i + 1}. ${card.cardName} (${card.interestRate}% APR)`
+                        ).join('<br>')}
+                    </div>
+                `;
+            }
+            
+            // Snowball method recommendation
+            if (snowballOrder.length > 0) {
+                strategyHTML += `
+                    <div class="strategy-item">
+                        <strong>❄️ Snowball Method (Quick Wins)</strong><br>
+                        <small style="opacity: 0.9;">Pay minimums on all cards, then focus extra payments on:</small><br>
+                        ${snowballOrder.slice(0, 3).map((card, i) => 
+                            `${i + 1}. ${card.cardName} (${formatCurrency(card.balance)})`
+                        ).join('<br>')}
+                    </div>
+                `;
+            }
+            
+            // Balance transfer opportunity
+            const highRateCards = cards.filter(c => parseFloat(c.interestRate) > 15 && parseFloat(c.balance) > 100);
+            if (highRateCards.length > 0) {
+                strategyHTML += `
+                    <div class="strategy-item">
+                        <strong>💡 Consider Balance Transfer</strong><br>
+                        <small style="opacity: 0.9;">You have ${highRateCards.length} card(s) with rates above 15%. A 0% balance transfer could save significant interest.</small>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('strategyRecommendation').innerHTML = strategyHTML;
+        }
+
+        // Calculate payoff timeline
+        function calculatePayoff() {
+            const extraPayment = parseFloat(document.getElementById('extraPayment').value) || 0;
+            const strategy = document.getElementById('payoffStrategy').value;
+            
+            if (cards.length === 0 || extraPayment <= 0) {
+                document.getElementById('payoffResults').innerHTML = '';
+                return;
+            }
+            
+            let workingCards = cards.map(c => ({...c, balance: parseFloat(c.balance)}));
+            let months = 0;
+            let totalInterest = 0;
+            const startingBalance = workingCards.reduce((sum, c) => sum + c.balance, 0);
+            
+            // Sort based on strategy
+            if (strategy === 'avalanche') {
+                workingCards.sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate));
+            } else {
+                workingCards.sort((a, b) => a.balance - b.balance);
+            }
+            
+            // Simulate payoff
+            while (workingCards.some(c => c.balance > 0) && months < 360) {
+                months++;
+                let remainingExtra = extraPayment;
+                
+                // Apply minimum payments and interest
+                workingCards.forEach(card => {
+                    if (card.balance > 0) {
+                        const monthlyInterest = (parseFloat(card.interestRate) / 100 / 12) * card.balance;
+                        totalInterest += monthlyInterest;
+                        card.balance += monthlyInterest;
+                        card.balance -= parseFloat(card.minPayment);
+                    }
+                });
+                
+                // Apply extra payment to first card with balance
+                for (let card of workingCards) {
+                    if (card.balance > 0 && remainingExtra > 0) {
+                        const payment = Math.min(remainingExtra, card.balance);
+                        card.balance -= payment;
+                        remainingExtra -= payment;
+                    }
+                    if (card.balance < 0) card.balance = 0;
+                }
+            }
+            
+            const totalPaid = startingBalance + totalInterest;
+            const savedAmount = (startingBalance * 0.3) - totalInterest; // Rough estimate of savings vs minimum payments only
+            
+            document.getElementById('payoffResults').innerHTML = `
+                <div class="calc-result">
+                    <h4 style="margin-bottom: 10px;">📊 Payoff Results</h4>
+                    <div class="result-grid">
+                        <div>
+                            <div class="stat-label">Time to Debt Free</div>
+                            <div class="stat-value" style="color: #28a745;">${months} months</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Total Interest</div>
+                            <div class="stat-value">${formatCurrency(totalInterest)}</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Total to Pay</div>
+                            <div class="stat-value">${formatCurrency(totalPaid)}</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Interest Saved</div>
+                            <div class="stat-value" style="color: #28a745;">~${formatCurrency(Math.max(0, savedAmount))}</div>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 14px; color: #6c757d;">
+                        By paying an extra ${formatCurrency(extraPayment)}/month using the ${strategy} method, 
+                        you'll be debt-free in ${Math.floor(months/12)} years and ${months%12} months.
+                    </p>
+                </div>
+            `;
+        }
+
+        // Update analytics
+        function updateAnalytics() {
+            if (cards.length === 0) return;
+            
+            const totalBalance = cards.reduce((sum, card) => sum + parseFloat(card.balance), 0);
+            const totalLimit = cards.reduce((sum, card) => sum + parseFloat(card.creditLimit), 0);
+            const overallUtilization = totalLimit > 0 ? calcUtilization(totalBalance, totalLimit) : 0;
+            
+            // Calculate credit health score (simplified)
+            let healthScore = 100;
+            if (overallUtilization > 30) healthScore -= 20;
+            if (overallUtilization > 50) healthScore -= 20;
+            if (overallUtilization > 70) healthScore -= 20;
+            
+            const highRateCards = cards.filter(c => parseFloat(c.interestRate) > 20).length;
+            healthScore -= highRateCards * 5;
+            
+            healthScore = Math.max(0, healthScore);
+            
+            // Update progress ring
+            const circumference = 2 * Math.PI * 54;
+            const offset = circumference - (healthScore / 100) * circumference;
+            const progressRing = document.getElementById('progressRing');
+            progressRing.style.strokeDashoffset = offset;
+            document.getElementById('progressText').textContent = healthScore + '%';
+            
+            // Generate insights
+            let insights = '<div style="margin-top: 20px;">';
+            
+            if (overallUtilization > 50) {
+                insights += `<div class="strategy-item" style="background: #fff3cd; color: #856404;">
+                    ⚠️ High utilization (${overallUtilization.toFixed(1)}%) may impact credit score. Try to keep under 30%.
+                </div>`;
+            }
+            
+            const upcomingDues = cards.filter(c => {
+                const daysUntilDue = Math.ceil((new Date(c.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+                return daysUntilDue <= 7 && daysUntilDue >= 0;
+            });
+            
+            if (upcomingDues.length > 0) {
+                insights += `<div class="strategy-item" style="background: #d1ecf1; color: #0c5460;">
+                    📅 ${upcomingDues.length} card(s) due within 7 days. Don't forget to pay!
+                </div>`;
+            }
+            
+            insights += '</div>';
+            document.getElementById('insightsSection').innerHTML = insights;
+            
+            // Update balance chart
+            const chartContainer = document.getElementById('balanceChart');
+            const maxBalance = Math.max(...cards.map(c => parseFloat(c.balance)));
+            
+            chartContainer.innerHTML = cards.slice(0, 8).map(card => {
+                const height = maxBalance > 0 ? (parseFloat(card.balance) / maxBalance) * 180 : 0;
+                return `
+                    <div class="bar" style="height: ${height}px;">
+                        <div class="bar-value">${formatCurrency(card.balance).replace('.00', '')}</div>
+                        <div class="bar-label">${card.cardName.substring(0, 8)}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Update payment history
+            const recentPayments = payments.slice(-10).reverse();
+            const historyHTML = recentPayments.length > 0 ? 
+                recentPayments.map(p => {
+                    const card = cards[p.cardIndex];
+                    return `
+                        <div style="padding: 10px; background: #f8f9fa; border-radius: 10px; margin-bottom: 10px;">
+                            <strong>${card ? card.cardName : 'Deleted Card'}</strong><br>
+                            <span style="color: #28a745;">${formatCurrency(p.amount)}</span> on ${new Date(p.date).toLocaleDateString()}
+                        </div>
+                    `;
+                }).join('') : 
+                '<p style="color: #6c757d;">No payments logged yet</p>';
+            
+            document.getElementById('paymentHistoryList').innerHTML = historyHTML;
+        }
+
+        // Open add modal
+        function openAddModal() {
+            if (cards.length >= 10) {
+                alert('Maximum of 10 cards allowed');
+                return;
+            }
+            editingIndex = null;
+            document.getElementById('modalTitle').textContent = 'Add Credit Card';
+            document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('cardForm').reset();
+            document.getElementById('cardModal').classList.add('active');
+        }
+
+        // Open edit modal
+        function openEditModal(index) {
+            editingIndex = index;
+            const card = cards[index];
+            
+            document.getElementById('modalTitle').textContent = 'Edit Credit Card';
+            document.getElementById('deleteBtn').style.display = 'block';
+            
+            document.getElementById('cardName').value = card.cardName;
+            document.getElementById('balance').value = card.balance;
+            document.getElementById('creditLimit').value = card.creditLimit;
+            document.getElementById('interestRate').value = card.interestRate;
+            document.getElementById('minPayment').value = card.minPayment;
+            document.getElementById('dueDate').value = card.dueDate;
+            document.getElementById('btAmount').value = card.btAmount || '';
+            document.getElementById('btExpiry').value = card.btExpiry || '';
+            document.getElementById('notes').value = card.notes || '';
+            
+            document.getElementById('cardModal').classList.add('active');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('cardModal').classList.remove('active');
+        }
+
+        // Save card
+        function saveCard(event) {
+            event.preventDefault();
+            
+            const card = {
+                cardName: document.getElementById('cardName').value,
+                balance: document.getElementById('balance').value,
+                creditLimit: document.getElementById('creditLimit').value,
+                interestRate: document.getElementById('interestRate').value,
+                minPayment: document.getElementById('minPayment').value,
+                dueDate: document.getElementById('dueDate').value,
+                btAmount: document.getElementById('btAmount').value || null,
+                btExpiry: document.getElementById('btExpiry').value || null,
+                notes: document.getElementById('notes').value || null
+            };
+            
+            if (editingIndex !== null) {
+                cards[editingIndex] = card;
+            } else {
+                cards.push(card);
+            }
+            
+            saveData();
+            renderCards();
+            updateDashboard();
+            updateStrategy();
+            updateAnalytics();
+            closeModal();
+        }
+
+        // Delete card
+        function deleteCard() {
+            if (confirm('Are you sure you want to delete this card?')) {
+                cards.splice(editingIndex, 1);
+                saveData();
+                renderCards();
+                updateDashboard();
+                updateStrategy();
+                updateAnalytics();
+                closeModal();
+            }
+        }
+
+        // Open payment modal
+        function openPaymentModal() {
+            const select = document.getElementById('paymentCard');
+            select.innerHTML = '<option value="">Choose a card...</option>' + 
+                cards.map((card, index) => 
+                    `<option value="${index}">${card.cardName} (Balance: ${formatCurrency(card.balance)})</option>`
+                ).join('');
+            
+            document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('paymentModal').classList.add('active');
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+        }
+
+        // Log payment
+        function logPayment(event) {
+            event.preventDefault();
+            
+            const cardIndex = parseInt(document.getElementById('paymentCard').value);
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const date = document.getElementById('paymentDate').value;
+            
+            // Update card balance
+            cards[cardIndex].balance = Math.max(0, parseFloat(cards[cardIndex].balance) - amount);
+            
+            // Save payment record
+            payments.push({
+                cardIndex: cardIndex,
+                amount: amount,
+                date: date
+            });
+            
+            saveData();
+            renderCards();
+            updateDashboard();
+            updateAnalytics();
+            closePaymentModal();
+            
+            alert(`Payment of ${formatCurrency(amount)} logged successfully!`);
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (cards.length === 0) {
+                alert('No cards to export');
+                return;
+            }
+            
+            const headers = ['Card Name', 'Balance', 'Credit Limit', 'Utilization %', 'Interest Rate', 'Min Payment', 'Due Date', 'BT Amount', 'BT Expiry', 'Notes'];
+            const rows = cards.map(card => [
+                card.cardName,
+                card.balance,
+                card.creditLimit,
+                calcUtilization(card.balance, card.creditLimit).toFixed(2),
+                card.interestRate,
+                card.minPayment,
+                card.dueDate,
+                card.btAmount || '',
+                card.btExpiry || '',
+                card.notes || ''
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `credit_cards_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize app
+        loadData();
+    </script>
+</body>
+</html>
