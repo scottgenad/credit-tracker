@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit Card Tracker Pro</title>
+    <title>Credit Card Tracker Pro - Your Debt Freedom Journey</title>
     <style>
         * {
             margin: 0;
@@ -34,6 +34,43 @@
             margin-bottom: 5px;
         }
 
+        .debt-free-countdown {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .countdown-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .countdown-date {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .countdown-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .countdown-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s ease;
+        }
+
         .tab-nav {
             display: flex;
             background: rgba(255,255,255,0.2);
@@ -53,6 +90,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 12px;
         }
 
         .tab-btn.active {
@@ -68,12 +106,93 @@
             display: block;
         }
 
+        .achievements-strip {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .achievement {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .achievement.earned {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .achievement-label {
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .achievement.locked {
+            opacity: 0.4;
+        }
+
+        .help-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .help-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .help-content.show {
+            display: block;
+        }
+
         .dashboard {
             background: white;
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .monthly-savings {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .savings-amount {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .savings-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
         }
 
         .stats-grid {
@@ -138,6 +257,60 @@
         .utilization-yellow { background: #ffc107; }
         .utilization-red { background: #dc3545; }
 
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            font-size: 10px;
+            margin-left: 4px;
+            cursor: help;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 1000;
+            width: 220px;
+            top: -60px;
+            right: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .tooltip.show {
+            display: block;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 20px;
+            border: 5px solid transparent;
+            border-top-color: #333;
+        }
+
+        .quick-tips {
+            background: #e7f5ff;
+            border-left: 4px solid #0c63e4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tip-item {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
         .actions {
             display: flex;
             gap: 10px;
@@ -171,6 +344,11 @@
 
         .btn-success {
             background: #28a745;
+            color: white;
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
         }
 
@@ -208,6 +386,13 @@
             border-radius: 12px;
             font-size: 11px;
             font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .card-header {
@@ -228,6 +413,8 @@
             font-size: 12px;
             font-weight: bold;
             color: white;
+            cursor: help;
+            position: relative;
         }
 
         .card-details {
@@ -410,6 +597,43 @@
             margin-bottom: 10px;
         }
 
+        .snowflake-calculator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .snowflake-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .snowflake-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .snowflake-item.active {
+            border-color: #667eea;
+            background: #e7f0ff;
+        }
+
+        .snowflake-result {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
         .calculator-section {
             background: #f8f9fa;
             border-radius: 15px;
@@ -461,51 +685,69 @@
             fill: #2c3e50;
         }
 
-        .chart-container {
+        .share-progress {
             background: white;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            height: 300px;
+            text-align: center;
+        }
+
+        .share-visual {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
             position: relative;
         }
 
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-around;
-            height: 200px;
-            margin-top: 20px;
-        }
-
-        .bar {
-            width: 40px;
-            background: linear-gradient(to top, #667eea, #764ba2);
-            border-radius: 5px 5px 0 0;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .bar:hover {
-            opacity: 0.8;
-        }
-
-        .bar-label {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            white-space: nowrap;
-        }
-
-        .bar-value {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
+        .share-percentage {
+            font-size: 48px;
             font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .share-text {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .notification-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+            max-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification-banner.show {
+            display: block;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+        }
+
+        .notification-text {
+            flex: 1;
         }
 
         @media (max-width: 480px) {
@@ -518,8 +760,12 @@
             }
 
             .tab-btn {
-                font-size: 12px;
+                font-size: 11px;
                 padding: 8px 5px;
+            }
+
+            .snowflake-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -527,8 +773,18 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💳 Credit Card Tracker Pro</h1>
-            <p style="opacity: 0.9; font-size: 14px;">Smart debt management & payoff tools</p>
+            <h1>💳 Your Debt Freedom Journey</h1>
+            <p style="opacity: 0.9; font-size: 14px;">Track, Celebrate, and Share Your Progress!</p>
+        </div>
+
+        <!-- Debt Free Countdown -->
+        <div class="debt-free-countdown" id="debtFreeCountdown" style="display: none;">
+            <div class="countdown-title">🎯 Debt Freedom Target</div>
+            <div class="countdown-date" id="countdownDate">Loading...</div>
+            <div id="countdownDays" style="font-size: 14px; opacity: 0.9;"></div>
+            <div class="countdown-progress">
+                <div class="countdown-progress-bar" id="countdownProgress"></div>
+            </div>
         </div>
 
         <!-- Tab Navigation -->
@@ -536,11 +792,77 @@
             <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
             <button class="tab-btn" onclick="switchTab('strategy')">Strategy</button>
             <button class="tab-btn" onclick="switchTab('analytics')">Analytics</button>
+            <button class="tab-btn" onclick="switchTab('celebrate')">Celebrate</button>
         </div>
 
         <!-- Overview Tab -->
         <div id="overview-tab" class="tab-content active">
+            <!-- Achievements Strip -->
+            <div class="achievements-strip" id="achievementsStrip">
+                <div class="achievement" id="ach-first-card">
+                    <div class="achievement-icon">🎉</div>
+                    <div class="achievement-label">First Card Added</div>
+                </div>
+                <div class="achievement" id="ach-payment">
+                    <div class="achievement-icon">💰</div>
+                    <div class="achievement-label">First Payment</div>
+                </div>
+                <div class="achievement" id="ach-under-50">
+                    <div class="achievement-icon">📊</div>
+                    <div class="achievement-label">Under 50% Util</div>
+                </div>
+                <div class="achievement" id="ach-under-30">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-label">Under 30% Util</div>
+                </div>
+                <div class="achievement" id="ach-streak-7">
+                    <div class="achievement-icon">🔥</div>
+                    <div class="achievement-label">7 Day Streak</div>
+                </div>
+                <div class="achievement" id="ach-paid-off">
+                    <div class="achievement-icon">🎊</div>
+                    <div class="achievement-label">Card Paid Off</div>
+                </div>
+                <div class="achievement" id="ach-1k-paid">
+                    <div class="achievement-icon">💎</div>
+                    <div class="achievement-label">$1K Paid</div>
+                </div>
+                <div class="achievement" id="ach-debt-free">
+                    <div class="achievement-icon">👑</div>
+                    <div class="achievement-label">Debt Free!</div>
+                </div>
+            </div>
+
+            <div class="help-section" onclick="toggleHelp()">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold;">💡 New to Credit? Click for Quick Help</span>
+                    <span id="helpArrow">▼</span>
+                </div>
+                <div class="help-content" id="helpContent">
+                    <div style="margin-bottom: 15px;">
+                        <strong>📊 What is Utilization?</strong><br>
+                        It's the percentage of credit you're using. If you have a $1,000 limit and owe $300, that's 30% utilization.
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong>🎯 Golden Rules:</strong><br>
+                        • Keep utilization under 30% (green zone)<br>
+                        • Pay more than minimum when possible<br>
+                        • Never miss a due date<br>
+                        • Pay high-interest cards first
+                    </div>
+                    <div>
+                        <strong>🚀 Quick Win:</strong><br>
+                        Even paying $20 extra per month can save hundreds in interest!
+                    </div>
+                </div>
+            </div>
+
             <div class="dashboard">
+                <div class="monthly-savings" id="monthlySavings" style="display: none;">
+                    <div class="savings-amount" id="savingsAmount">$0</div>
+                    <div class="savings-label">Saved in interest this month! 🎉</div>
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Total Balance</div>
@@ -560,7 +882,13 @@
                     </div>
                 </div>
                 
-                <div class="stat-label" style="margin-bottom: 5px;">Overall Utilization</div>
+                <div class="stat-label" style="margin-bottom: 5px;">
+                    Overall Utilization 
+                    <span class="info-icon" onclick="showTooltip('overall-util-tooltip', event)" style="background: #6c757d;">?</span>
+                    <div class="tooltip" id="overall-util-tooltip">
+                        This shows how much of your total credit you're using. Keep it under 30% for a better credit score!
+                    </div>
+                </div>
                 <div class="utilization-bar">
                     <div class="utilization-fill" id="overallUtilization"></div>
                 </div>
@@ -568,6 +896,9 @@
                 <div class="actions">
                     <button class="btn btn-primary" onclick="openAddModal()">+ Add Card</button>
                     <button class="btn btn-success" onclick="openPaymentModal()">💰 Log Payment</button>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="enableNotifications()">🔔 Reminders</button>
                     <button class="btn btn-secondary" onclick="exportToCSV()">📥 Export</button>
                 </div>
 
@@ -585,8 +916,44 @@
         <!-- Strategy Tab -->
         <div id="strategy-tab" class="tab-content">
             <div class="strategy-card">
-                <div class="strategy-title">🎯 Recommended Payoff Strategy</div>
+                <div class="strategy-title">🎯 Your Personalized Payoff Strategy</div>
                 <div id="strategyRecommendation"></div>
+                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 10px;">
+                    <strong>💰 Reality Check:</strong><br>
+                    <small>If you only pay minimums, you'll likely pay 2-3x your current balance in interest over time. Even $50 extra per month can cut years off your debt!</small>
+                </div>
+            </div>
+
+            <div class="snowflake-calculator">
+                <h3 style="margin-bottom: 15px;">☕ Small Sacrifices Calculator</h3>
+                <p style="font-size: 14px; color: #6c757d; margin-bottom: 15px;">Select what you could skip monthly:</p>
+                <div class="snowflake-grid">
+                    <div class="snowflake-item" data-amount="15" onclick="toggleSnowflake(this)">
+                        <div>☕ 3 Coffees</div>
+                        <div style="font-size: 12px; color: #6c757d;">$15/month</div>
+                    </div>
+                    <div class="snowflake-item" data-amount="50" onclick="toggleSnowflake(this)">
+                        <div>🍔 Fast Food</div>
+                        <div style="font-size: 12px; color: #6c757d;">$50/month</div>
+                    </div>
+                    <div class="snowflake-item" data-amount="15" onclick="toggleSnowflake(this)">
+                        <div>📺 Streaming</div>
+                        <div style="font-size: 12px; color: #6c757d;">$15/month</div>
+                    </div>
+                    <div class="snowflake-item" data-amount="30" onclick="toggleSnowflake(this)">
+                        <div>🎮 Gaming</div>
+                        <div style="font-size: 12px; color: #6c757d;">$30/month</div>
+                    </div>
+                    <div class="snowflake-item" data-amount="40" onclick="toggleSnowflake(this)">
+                        <div>💅 Beauty</div>
+                        <div style="font-size: 12px; color: #6c757d;">$40/month</div>
+                    </div>
+                    <div class="snowflake-item" data-amount="25" onclick="toggleSnowflake(this)">
+                        <div>🍺 Drinks</div>
+                        <div style="font-size: 12px; color: #6c757d;">$25/month</div>
+                    </div>
+                </div>
+                <div id="snowflakeResult"></div>
             </div>
 
             <div class="calculator-section">
@@ -620,14 +987,32 @@
                 <div id="insightsSection"></div>
             </div>
 
-            <div class="chart-container">
-                <h3>Balance Distribution</h3>
-                <div class="bar-chart" id="balanceChart"></div>
-            </div>
-
             <div class="dashboard">
                 <h3 style="margin-bottom: 15px;">📊 Payment History</h3>
                 <div id="paymentHistoryList"></div>
+            </div>
+        </div>
+
+        <!-- Celebrate Tab -->
+        <div id="celebrate-tab" class="tab-content">
+            <div class="share-progress">
+                <h3 style="margin-bottom: 20px;">🎉 Share Your Progress!</h3>
+                <div class="share-visual" id="shareVisual">
+                    <div class="share-percentage" id="sharePercentage">0%</div>
+                    <div class="share-text">DEBT FREE!</div>
+                    <div style="margin-top: 20px; font-size: 14px;">
+                        <div id="shareStats"></div>
+                    </div>
+                </div>
+                <button class="btn btn-share" onclick="shareProgress()">📱 Share My Progress</button>
+                <p style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+                    Take a screenshot to share on social media!
+                </p>
+            </div>
+
+            <div class="dashboard">
+                <h3 style="margin-bottom: 15px;">🏆 Your Achievements</h3>
+                <div id="achievementsList"></div>
             </div>
         </div>
     </div>
@@ -732,29 +1117,51 @@
         </div>
     </div>
 
+    <!-- Notification Banner -->
+    <div class="notification-banner" id="notificationBanner">
+        <div class="notification-content">
+            <div class="notification-icon" id="notificationIcon">🔔</div>
+            <div class="notification-text" id="notificationText"></div>
+        </div>
+    </div>
+
     <script>
         let cards = [];
         let payments = [];
+        let achievements = [];
         let editingIndex = null;
         let currentSort = 'dueDate';
+        let lastVisit = null;
+        let streak = 0;
+        let totalPaidOff = 0;
 
         // Load data from localStorage
         function loadData() {
             const savedCards = localStorage.getItem('creditCards');
             const savedPayments = localStorage.getItem('creditPayments');
+            const savedAchievements = localStorage.getItem('creditAchievements');
+            const savedLastVisit = localStorage.getItem('lastVisit');
+            const savedStreak = localStorage.getItem('streak');
+            const savedTotalPaidOff = localStorage.getItem('totalPaidOff');
             
-            if (savedCards) {
-                cards = JSON.parse(savedCards);
-            }
-            if (savedPayments) {
-                payments = JSON.parse(savedPayments);
-            }
+            if (savedCards) cards = JSON.parse(savedCards);
+            if (savedPayments) payments = JSON.parse(savedPayments);
+            if (savedAchievements) achievements = JSON.parse(savedAchievements);
+            if (savedLastVisit) lastVisit = new Date(savedLastVisit);
+            if (savedStreak) streak = parseInt(savedStreak);
+            if (savedTotalPaidOff) totalPaidOff = parseFloat(savedTotalPaidOff);
+            
+            // Update streak
+            updateStreak();
             
             if (cards.length > 0) {
                 renderCards();
                 updateDashboard();
                 updateStrategy();
                 updateAnalytics();
+                updateAchievements();
+                updateDebtFreeCountdown();
+                checkDueReminders();
             } else {
                 renderEmptyState();
             }
@@ -764,6 +1171,26 @@
         function saveData() {
             localStorage.setItem('creditCards', JSON.stringify(cards));
             localStorage.setItem('creditPayments', JSON.stringify(payments));
+            localStorage.setItem('creditAchievements', JSON.stringify(achievements));
+            localStorage.setItem('lastVisit', new Date().toISOString());
+            localStorage.setItem('streak', streak.toString());
+            localStorage.setItem('totalPaidOff', totalPaidOff.toString());
+        }
+
+        // Update streak
+        function updateStreak() {
+            const now = new Date();
+            if (lastVisit) {
+                const daysDiff = Math.floor((now - lastVisit) / (1000 * 60 * 60 * 24));
+                if (daysDiff === 1) {
+                    streak++;
+                } else if (daysDiff > 1) {
+                    streak = 1;
+                }
+            } else {
+                streak = 1;
+            }
+            lastVisit = now;
         }
 
         // Switch tabs
@@ -776,6 +1203,7 @@
             
             if (tab === 'strategy') updateStrategy();
             if (tab === 'analytics') updateAnalytics();
+            if (tab === 'celebrate') updateCelebrate();
         }
 
         // Format currency
@@ -816,6 +1244,23 @@
                 avgInterestRate = weightedSum / totalBalance;
             }
 
+            // Calculate monthly savings
+            const thisMonthPayments = payments.filter(p => {
+                const paymentDate = new Date(p.date);
+                const now = new Date();
+                return paymentDate.getMonth() === now.getMonth() && 
+                       paymentDate.getFullYear() === now.getFullYear();
+            });
+            
+            const totalPaidThisMonth = thisMonthPayments.reduce((sum, p) => sum + p.amount, 0);
+            const minPaymentsTotal = cards.reduce((sum, c) => sum + parseFloat(c.minPayment), 0);
+            
+            if (totalPaidThisMonth > minPaymentsTotal) {
+                const savings = (totalPaidThisMonth - minPaymentsTotal) * (avgInterestRate / 100 / 12);
+                document.getElementById('monthlySavings').style.display = 'block';
+                document.getElementById('savingsAmount').textContent = formatCurrency(savings);
+            }
+
             document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
             document.getElementById('totalMinPayment').textContent = formatCurrency(totalMinPayment);
             document.getElementById('avgInterestRate').textContent = avgInterestRate.toFixed(1) + '%';
@@ -825,6 +1270,199 @@
             utilizationBar.style.width = Math.min(overallUtilization, 100) + '%';
             utilizationBar.textContent = overallUtilization.toFixed(1) + '%';
             utilizationBar.className = 'utilization-fill ' + getUtilizationColor(overallUtilization);
+
+            updateQuickTips(overallUtilization, totalBalance, avgInterestRate);
+        }
+
+        // Update quick tips
+        function updateQuickTips(utilization, totalBalance, avgRate) {
+            const dashboardEl = document.querySelector('.dashboard');
+            let existingTips = document.getElementById('quickTips');
+            
+            if (existingTips) {
+                existingTips.remove();
+            }
+
+            if (utilization > 30 || avgRate > 20) {
+                const tipsHTML = `
+                    <div class="quick-tips" id="quickTips" style="margin-top: 20px;">
+                        <strong>💡 Quick Tips for You:</strong>
+                        ${utilization > 30 ? `<div class="tip-item">• Your ${utilization.toFixed(1)}% utilization is high. Paying down to 30% could boost your credit score by 20-50 points!</div>` : ''}
+                        ${avgRate > 20 ? `<div class="tip-item">• Your ${avgRate.toFixed(1)}% average rate is costing you ~$${((totalBalance * avgRate / 100) / 12).toFixed(0)}/month in interest!</div>` : ''}
+                        ${totalBalance > 5000 ? `<div class="tip-item">• Consider a balance transfer card with 0% APR to save on interest.</div>` : ''}
+                    </div>
+                `;
+                dashboardEl.insertAdjacentHTML('beforeend', tipsHTML);
+            }
+        }
+
+        // Update debt free countdown
+        function updateDebtFreeCountdown() {
+            if (cards.length === 0) return;
+            
+            const totalBalance = cards.reduce((sum, c) => sum + parseFloat(c.balance), 0);
+            const totalMinPayment = cards.reduce((sum, c) => sum + parseFloat(c.minPayment), 0);
+            
+            if (totalBalance === 0) {
+                document.getElementById('debtFreeCountdown').style.display = 'none';
+                return;
+            }
+            
+            // Estimate debt free date (simplified)
+            const monthsToFreedom = Math.ceil(totalBalance / (totalMinPayment * 2));
+            const debtFreeDate = new Date();
+            debtFreeDate.setMonth(debtFreeDate.getMonth() + monthsToFreedom);
+            
+            const startBalance = localStorage.getItem('startBalance') || totalBalance;
+            localStorage.setItem('startBalance', startBalance);
+            
+            const progress = ((startBalance - totalBalance) / startBalance) * 100;
+            
+            document.getElementById('debtFreeCountdown').style.display = 'block';
+            document.getElementById('countdownDate').textContent = debtFreeDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            document.getElementById('countdownDays').textContent = `${monthsToFreedom} months to go!`;
+            document.getElementById('countdownProgress').style.width = progress + '%';
+        }
+
+        // Check and unlock achievements
+        function updateAchievements() {
+            const totalBalance = cards.reduce((sum, c) => sum + parseFloat(c.balance), 0);
+            const totalLimit = cards.reduce((sum, c) => sum + parseFloat(c.creditLimit), 0);
+            const utilization = totalLimit > 0 ? calcUtilization(totalBalance, totalLimit) : 0;
+            const totalPayments = payments.reduce((sum, p) => sum + p.amount, 0);
+            
+            // First card added
+            if (cards.length > 0 && !achievements.includes('first-card')) {
+                unlockAchievement('first-card', '🎉 First Card Added!');
+            }
+            
+            // First payment
+            if (payments.length > 0 && !achievements.includes('payment')) {
+                unlockAchievement('payment', '💰 First Payment Made!');
+            }
+            
+            // Under 50% utilization
+            if (utilization < 50 && utilization > 0 && !achievements.includes('under-50')) {
+                unlockAchievement('under-50', '📊 Under 50% Utilization!');
+            }
+            
+            // Under 30% utilization
+            if (utilization < 30 && utilization > 0 && !achievements.includes('under-30')) {
+                unlockAchievement('under-30', '🏆 Under 30% Utilization - Excellent!');
+            }
+            
+            // 7 day streak
+            if (streak >= 7 && !achievements.includes('streak-7')) {
+                unlockAchievement('streak-7', '🔥 7 Day Streak!');
+            }
+            
+            // Card paid off
+            if (cards.some(c => parseFloat(c.balance) === 0) && !achievements.includes('paid-off')) {
+                unlockAchievement('paid-off', '🎊 Card Paid Off!');
+            }
+            
+            // $1K paid
+            if (totalPayments >= 1000 && !achievements.includes('1k-paid')) {
+                unlockAchievement('1k-paid', '💎 $1,000 Total Paid!');
+            }
+            
+            // Debt free
+            if (totalBalance === 0 && cards.length > 0 && !achievements.includes('debt-free')) {
+                unlockAchievement('debt-free', '👑 DEBT FREE! Congratulations!');
+            }
+            
+            // Update achievement display
+            achievements.forEach(ach => {
+                const element = document.getElementById('ach-' + ach);
+                if (element) {
+                    element.classList.add('earned');
+                }
+            });
+        }
+
+        // Unlock achievement
+        function unlockAchievement(id, message) {
+            achievements.push(id);
+            showNotification('🏆', message);
+            saveData();
+        }
+
+        // Show notification
+        function showNotification(icon, text) {
+            const banner = document.getElementById('notificationBanner');
+            document.getElementById('notificationIcon').textContent = icon;
+            document.getElementById('notificationText').textContent = text;
+            banner.classList.add('show');
+            
+            setTimeout(() => {
+                banner.classList.remove('show');
+            }, 5000);
+        }
+
+        // Check due reminders
+        function checkDueReminders() {
+            cards.forEach(card => {
+                const dueDate = new Date(card.dueDate);
+                const today = new Date();
+                const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (daysUntilDue === 3) {
+                    showNotification('⚠️', `${card.cardName} due in 3 days!`);
+                } else if (daysUntilDue === 1) {
+                    showNotification('🚨', `${card.cardName} due TOMORROW!`);
+                } else if (daysUntilDue === 0) {
+                    showNotification('🔴', `${card.cardName} due TODAY!`);
+                }
+            });
+        }
+
+        // Enable notifications
+        function enableNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showNotification('🔔', 'Reminders enabled! We\'ll notify you 3 days before due dates.');
+                        
+                        // Set up daily check
+                        setInterval(checkDueReminders, 86400000); // Check daily
+                    }
+                });
+            } else {
+                alert('Your browser doesn\'t support notifications. Check your cards regularly!');
+            }
+        }
+
+        // Snowflake calculator
+        function toggleSnowflake(element) {
+            element.classList.toggle('active');
+            calculateSnowflake();
+        }
+
+        function calculateSnowflake() {
+            const activeItems = document.querySelectorAll('.snowflake-item.active');
+            let totalSavings = 0;
+            
+            activeItems.forEach(item => {
+                totalSavings += parseInt(item.dataset.amount);
+            });
+            
+            if (totalSavings > 0) {
+                const totalBalance = cards.reduce((sum, c) => sum + parseFloat(c.balance), 0);
+                const monthsSaved = Math.floor(totalBalance / totalSavings / 3);
+                
+                document.getElementById('snowflakeResult').innerHTML = `
+                    <div class="snowflake-result">
+                        <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">
+                            $${totalSavings}/month = ${monthsSaved} months saved!
+                        </div>
+                        <div style="font-size: 14px;">
+                            These small sacrifices would pay off your debt ${monthsSaved} months faster!
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('snowflakeResult').innerHTML = '';
+            }
         }
 
         // Sort cards
@@ -867,7 +1505,6 @@
                 return;
             }
             
-            // Find highest interest rate card with balance for priority flag
             const highestRateCard = [...cards]
                 .filter(c => parseFloat(c.balance) > 0)
                 .sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate))[0];
@@ -879,7 +1516,6 @@
                 const daysUntilDue = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
                 const isPriority = highestRateCard && card === highestRateCard;
                 
-                // Get recent payments for this card
                 const recentPayments = payments
                     .filter(p => p.cardIndex === index)
                     .slice(-3)
@@ -887,10 +1523,21 @@
                 
                 return `
                     <div class="card-item ${isPriority ? 'priority' : ''}" onclick="openEditModal(${index})">
-                        ${isPriority ? '<span class="priority-badge">PAY FIRST</span>' : ''}
+                        ${isPriority ? '<span class="priority-badge">PAY FIRST - HIGHEST INTEREST!</span>' : ''}
                         <div class="card-header">
                             <span class="card-name">${card.cardName}</span>
-                            <span class="card-utilization ${utilizationColor}">${utilization.toFixed(1)}%</span>
+                            <div style="position: relative;">
+                                <span class="card-utilization ${utilizationColor}" onclick="event.stopPropagation(); showCardTooltip(${index}, event)">
+                                    ${utilization.toFixed(1)}% 
+                                    <span class="info-icon">?</span>
+                                </span>
+                                <div class="tooltip" id="card-tooltip-${index}">
+                                    You're using ${utilization.toFixed(1)}% of this card's limit. 
+                                    ${utilization > 50 ? 'Try to pay down to under 30% to improve your credit!' : 
+                                      utilization > 30 ? 'Good job! Try to get under 30% for best credit score.' : 
+                                      'Excellent! Low utilization helps your credit score!'}
+                                </div>
+                            </div>
                         </div>
                         <div class="card-details">
                             <div class="detail-item">
@@ -906,7 +1553,12 @@
                                 Min: <span class="detail-value">${formatCurrency(card.minPayment)}</span>
                             </div>
                             <div class="detail-item" style="grid-column: span 2;">
-                                Due: <span class="detail-value ${daysUntilDue <= 3 ? 'text-danger' : ''}">${dueDate.toLocaleDateString()} (${daysUntilDue} days)</span>
+                                Due: <span class="detail-value ${daysUntilDue <= 3 ? 'text-danger' : ''}" style="${daysUntilDue <= 3 ? 'color: #dc3545; font-weight: bold;' : ''}">
+                                    ${dueDate.toLocaleDateString()} 
+                                    ${daysUntilDue <= 0 ? '⚠️ OVERDUE!' : 
+                                      daysUntilDue <= 3 ? `⚠️ ${daysUntilDue} days!` : 
+                                      `(${daysUntilDue} days)`}
+                                </span>
                             </div>
                             ${card.btAmount ? `
                                 <div class="detail-item" style="grid-column: span 2;">
@@ -935,8 +1587,8 @@
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
                     </svg>
-                    <h3>No cards added yet</h3>
-                    <p>Add your first credit card to start tracking</p>
+                    <h3>Start Your Debt Freedom Journey!</h3>
+                    <p>Add your first credit card to begin tracking</p>
                 </div>
             `;
         }
@@ -954,7 +1606,6 @@
             
             let strategyHTML = '';
             
-            // Avalanche method recommendation
             if (avalancheOrder.length > 0) {
                 strategyHTML += `
                     <div class="strategy-item">
@@ -967,7 +1618,6 @@
                 `;
             }
             
-            // Snowball method recommendation
             if (snowballOrder.length > 0) {
                 strategyHTML += `
                     <div class="strategy-item">
@@ -980,7 +1630,6 @@
                 `;
             }
             
-            // Balance transfer opportunity
             const highRateCards = cards.filter(c => parseFloat(c.interestRate) > 15 && parseFloat(c.balance) > 100);
             if (highRateCards.length > 0) {
                 strategyHTML += `
@@ -1009,19 +1658,16 @@
             let totalInterest = 0;
             const startingBalance = workingCards.reduce((sum, c) => sum + c.balance, 0);
             
-            // Sort based on strategy
             if (strategy === 'avalanche') {
                 workingCards.sort((a, b) => parseFloat(b.interestRate) - parseFloat(a.interestRate));
             } else {
                 workingCards.sort((a, b) => a.balance - b.balance);
             }
             
-            // Simulate payoff
             while (workingCards.some(c => c.balance > 0) && months < 360) {
                 months++;
                 let remainingExtra = extraPayment;
                 
-                // Apply minimum payments and interest
                 workingCards.forEach(card => {
                     if (card.balance > 0) {
                         const monthlyInterest = (parseFloat(card.interestRate) / 100 / 12) * card.balance;
@@ -1031,7 +1677,6 @@
                     }
                 });
                 
-                // Apply extra payment to first card with balance
                 for (let card of workingCards) {
                     if (card.balance > 0 && remainingExtra > 0) {
                         const payment = Math.min(remainingExtra, card.balance);
@@ -1043,23 +1688,26 @@
             }
             
             const totalPaid = startingBalance + totalInterest;
-            const savedAmount = (startingBalance * 0.3) - totalInterest; // Rough estimate of savings vs minimum payments only
+            const savedAmount = (startingBalance * 0.3) - totalInterest;
+            
+            const debtFreeDate = new Date();
+            debtFreeDate.setMonth(debtFreeDate.getMonth() + months);
             
             document.getElementById('payoffResults').innerHTML = `
                 <div class="calc-result">
                     <h4 style="margin-bottom: 10px;">📊 Payoff Results</h4>
                     <div class="result-grid">
                         <div>
-                            <div class="stat-label">Time to Debt Free</div>
+                            <div class="stat-label">Debt Free Date</div>
+                            <div class="stat-value" style="color: #28a745;">${debtFreeDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Time to Freedom</div>
                             <div class="stat-value" style="color: #28a745;">${months} months</div>
                         </div>
                         <div>
                             <div class="stat-label">Total Interest</div>
                             <div class="stat-value">${formatCurrency(totalInterest)}</div>
-                        </div>
-                        <div>
-                            <div class="stat-label">Total to Pay</div>
-                            <div class="stat-value">${formatCurrency(totalPaid)}</div>
                         </div>
                         <div>
                             <div class="stat-label">Interest Saved</div>
@@ -1082,7 +1730,6 @@
             const totalLimit = cards.reduce((sum, card) => sum + parseFloat(card.creditLimit), 0);
             const overallUtilization = totalLimit > 0 ? calcUtilization(totalBalance, totalLimit) : 0;
             
-            // Calculate credit health score (simplified)
             let healthScore = 100;
             if (overallUtilization > 30) healthScore -= 20;
             if (overallUtilization > 50) healthScore -= 20;
@@ -1093,14 +1740,12 @@
             
             healthScore = Math.max(0, healthScore);
             
-            // Update progress ring
             const circumference = 2 * Math.PI * 54;
             const offset = circumference - (healthScore / 100) * circumference;
             const progressRing = document.getElementById('progressRing');
             progressRing.style.strokeDashoffset = offset;
             document.getElementById('progressText').textContent = healthScore + '%';
             
-            // Generate insights
             let insights = '<div style="margin-top: 20px;">';
             
             if (overallUtilization > 50) {
@@ -1123,21 +1768,6 @@
             insights += '</div>';
             document.getElementById('insightsSection').innerHTML = insights;
             
-            // Update balance chart
-            const chartContainer = document.getElementById('balanceChart');
-            const maxBalance = Math.max(...cards.map(c => parseFloat(c.balance)));
-            
-            chartContainer.innerHTML = cards.slice(0, 8).map(card => {
-                const height = maxBalance > 0 ? (parseFloat(card.balance) / maxBalance) * 180 : 0;
-                return `
-                    <div class="bar" style="height: ${height}px;">
-                        <div class="bar-value">${formatCurrency(card.balance).replace('.00', '')}</div>
-                        <div class="bar-label">${card.cardName.substring(0, 8)}</div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Update payment history
             const recentPayments = payments.slice(-10).reverse();
             const historyHTML = recentPayments.length > 0 ? 
                 recentPayments.map(p => {
@@ -1152,6 +1782,80 @@
                 '<p style="color: #6c757d;">No payments logged yet</p>';
             
             document.getElementById('paymentHistoryList').innerHTML = historyHTML;
+        }
+
+        // Update celebrate tab
+        function updateCelebrate() {
+            const totalBalance = cards.reduce((sum, c) => sum + parseFloat(c.balance), 0);
+            const startBalance = parseFloat(localStorage.getItem('startBalance')) || totalBalance;
+            const percentDebtFree = startBalance > 0 ? ((startBalance - totalBalance) / startBalance * 100) : 0;
+            
+            document.getElementById('sharePercentage').textContent = percentDebtFree.toFixed(0) + '%';
+            
+            const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+            document.getElementById('shareStats').innerHTML = `
+                <div>💰 Total Paid: ${formatCurrency(totalPaid)}</div>
+                <div>📉 Debt Reduced: ${formatCurrency(startBalance - totalBalance)}</div>
+                <div>🔥 Streak: ${streak} days</div>
+            `;
+            
+            const achievementsHTML = achievements.length > 0 ?
+                achievements.map(ach => {
+                    const achMap = {
+                        'first-card': '🎉 First Card Added',
+                        'payment': '💰 First Payment Made',
+                        'under-50': '📊 Under 50% Utilization',
+                        'under-30': '🏆 Under 30% Utilization',
+                        'streak-7': '🔥 7 Day Streak',
+                        'paid-off': '🎊 Card Paid Off',
+                        '1k-paid': '💎 $1,000 Total Paid',
+                        'debt-free': '👑 DEBT FREE!'
+                    };
+                    return `
+                        <div style="padding: 10px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 10px; margin-bottom: 10px;">
+                            ${achMap[ach] || ach}
+                        </div>
+                    `;
+                }).join('') :
+                '<p style="color: #6c757d;">Complete challenges to unlock achievements!</p>';
+            
+            document.getElementById('achievementsList').innerHTML = achievementsHTML;
+        }
+
+        // Share progress
+        function shareProgress() {
+            const shareText = `I'm ${document.getElementById('sharePercentage').textContent} debt-free! 🎉 Tracking my progress and crushing my debt one payment at a time! 💪`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Debt Freedom Journey',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                showNotification('📋', 'Progress copied to clipboard! Share on social media!');
+            }
+        }
+
+        // Helper functions
+        function showTooltip(id, event) {
+            event.stopPropagation();
+            const tooltip = document.getElementById(id);
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 3000);
+        }
+
+        function showCardTooltip(index, event) {
+            event.stopPropagation();
+            const tooltip = document.getElementById(`card-tooltip-${index}`);
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 3000);
+        }
+
+        function toggleHelp() {
+            const helpContent = document.getElementById('helpContent');
+            helpContent.classList.toggle('show');
+            document.getElementById('helpArrow').textContent = helpContent.classList.contains('show') ? '▲' : '▼';
         }
 
         // Open add modal
@@ -1210,6 +1914,11 @@
             };
             
             if (editingIndex !== null) {
+                // Check if balance reduced (payment made)
+                if (parseFloat(card.balance) < parseFloat(cards[editingIndex].balance)) {
+                    const reduction = parseFloat(cards[editingIndex].balance) - parseFloat(card.balance);
+                    totalPaidOff += reduction;
+                }
                 cards[editingIndex] = card;
             } else {
                 cards.push(card);
@@ -1220,6 +1929,8 @@
             updateDashboard();
             updateStrategy();
             updateAnalytics();
+            updateAchievements();
+            updateDebtFreeCountdown();
             closeModal();
         }
 
@@ -1232,6 +1943,8 @@
                 updateDashboard();
                 updateStrategy();
                 updateAnalytics();
+                updateAchievements();
+                updateDebtFreeCountdown();
                 closeModal();
             }
         }
@@ -1261,10 +1974,9 @@
             const amount = parseFloat(document.getElementById('paymentAmount').value);
             const date = document.getElementById('paymentDate').value;
             
-            // Update card balance
             cards[cardIndex].balance = Math.max(0, parseFloat(cards[cardIndex].balance) - amount);
+            totalPaidOff += amount;
             
-            // Save payment record
             payments.push({
                 cardIndex: cardIndex,
                 amount: amount,
@@ -1275,9 +1987,11 @@
             renderCards();
             updateDashboard();
             updateAnalytics();
+            updateAchievements();
+            updateDebtFreeCountdown();
             closePaymentModal();
             
-            alert(`Payment of ${formatCurrency(amount)} logged successfully!`);
+            showNotification('💰', `Payment of ${formatCurrency(amount)} logged successfully!`);
         }
 
         // Export to CSV
@@ -1317,6 +2031,9 @@
 
         // Initialize app
         loadData();
+
+        // Check for due dates every hour
+        setInterval(checkDueReminders, 3600000);
     </script>
 </body>
 </html>
